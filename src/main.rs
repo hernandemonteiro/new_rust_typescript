@@ -19,7 +19,7 @@ fn main() {
     if let Some(ast) = parser.parse() {
         let mut interpreter = interpreter::Interpreter::new();
 
-        interpreter.interpret(ast); // Use interpret para processar a AST
+        interpreter.interpret(ast);
     } else {
         println!("Erro ao fazer parsing");
     }
