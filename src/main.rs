@@ -9,7 +9,7 @@ use parser::Parser;
 
 fn main() {
     let source = r#"
-        print("Hello, World!");
+        print("Hello, World!\n");
         let x = 10 + 2;
         print(x);
         let y = 5 * 3;

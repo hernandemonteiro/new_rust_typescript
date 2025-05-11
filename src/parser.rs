@@ -169,9 +169,16 @@ impl<'a> Parser<'a> {
                 Some(Expr::Var(name))
             }
             Token::StringLiteral => {
-                let value = self.lexer.slice().trim_matches('"').to_string();
+                let raw = self.lexer.slice();
+                let trimmed = raw.trim_matches('"');
+                let unescaped = trimmed
+                    .replace("\\n", "\n")
+                    .replace("\\t", "\t")
+                    .replace("\\\"", "\"")
+                    .replace("\\\\", "\\");
+
                 self.advance();
-                Some(Expr::String(value))
+                Some(Expr::String(unescaped))
             }
             _ => None,
         }
