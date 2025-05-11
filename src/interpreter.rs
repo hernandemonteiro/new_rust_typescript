@@ -12,7 +12,6 @@ impl Interpreter {
         }
     }
 
-    // Método interpretador
     pub fn interpret(&mut self, ast: Expr) {
         match ast {
             Expr::Assign(var, value) => {
@@ -67,7 +66,6 @@ impl Interpreter {
         }
     }
 
-    // Método de avaliação
     pub fn eval(&mut self, expr: Expr) -> i64 {
         match expr {
             Expr::Number(value) => value,

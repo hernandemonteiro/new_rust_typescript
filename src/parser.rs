@@ -33,10 +33,10 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_let(&mut self) -> Option<Expr> {
-        self.advance(); // consumir 'let'
+        self.advance();
 
         let name = if let Some(Token::Identifier) = &self.current_token {
-            let name = self.lexer.slice().to_string(); // pega nome real
+            let name = self.lexer.slice().to_string();
             self.advance();
             name
         } else {
@@ -46,58 +46,54 @@ impl<'a> Parser<'a> {
         if self.current_token != Some(Token::Equals) {
             return None;
         }
-        self.advance(); // consumir '='
+        self.advance();
 
-        let value = self.expr()?; // parse do valor da atribuição
+        let value = self.expr()?;
 
         if self.current_token != Some(Token::Semicolon) {
             return None;
         }
-        self.advance(); // consumir ';'
+        self.advance();
 
         Some(Expr::Assign(name, Box::new(value)))
     }
 
     fn parse_print(&mut self) -> Option<Expr> {
-        self.advance(); // consumir 'print'
+        self.advance();
 
         if self.current_token != Some(Token::LParen) {
             return None;
         }
-        self.advance(); // consumir '('
+        self.advance();
 
         let expr = self.expr()?;
 
         if self.current_token != Some(Token::RParen) {
             return None;
         }
-        self.advance(); // consumir ')'
+        self.advance();
 
         if self.current_token != Some(Token::Semicolon) {
             return None;
         }
-        self.advance(); // consumir ';'
+        self.advance();
 
         Some(Expr::Print(Box::new(expr)))
     }
 
     fn call_expr(&mut self) -> Option<Expr> {
-        // Espera que o token atual seja um identificador (nome da função)
         if let Some(Token::Identifier) = self.current_token {
-            let func_name = self.lexer.slice().to_string(); // Pega o nome da função
-            self.advance(); // Avança para o próximo token, que deve ser '('
+            let func_name = self.lexer.slice().to_string();
+            self.advance();
 
-            // Agora, precisamos verificar os parênteses e os argumentos
             if let Some(Token::LParen) = self.current_token {
-                self.advance(); // Avança para o próximo token (deve ser o primeiro argumento ou ')')
+                self.advance();
 
                 let mut args = Vec::new();
 
-                // Parse de argumentos
                 while let Some(arg) = self.term() {
                     args.push(arg);
 
-                    // Se o próximo token for uma vírgula, avança para o próximo argumento
                     if let Some(Token::Comma) = self.current_token {
                         self.advance();
                     } else {
@@ -105,9 +101,8 @@ impl<'a> Parser<'a> {
                     }
                 }
 
-                // Verifica se temos o parêntese de fechamento
                 if let Some(Token::RParen) = self.current_token {
-                    self.advance(); // Avança para o próximo token
+                    self.advance();
                     return Some(Expr::Call(func_name, args));
                 }
             }
