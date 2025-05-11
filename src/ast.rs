@@ -4,6 +4,7 @@ pub enum Expr {
     BinOp(Box<Expr>, BinOp, Box<Expr>),
     Var(String),
     Number(i64),
+    String(String),
     Call(String, Vec<Expr>),
     Print(Box<Expr>),
 }

@@ -19,8 +19,14 @@ impl<'a> Parser<'a> {
         self.current_token = self.lexer.next().and_then(Result::ok);
     }
 
-    pub fn parse(&mut self) -> Option<Expr> {
-        self.parse_stmt()
+    pub fn parse(&mut self) -> Option<Vec<Expr>> {
+        let mut exprs = Vec::new();
+
+        while let Some(expr) = self.parse_stmt() {
+            exprs.push(expr);
+        }
+
+        if exprs.is_empty() { None } else { Some(exprs) }
     }
 
     fn parse_stmt(&mut self) -> Option<Expr> {
@@ -28,6 +34,12 @@ impl<'a> Parser<'a> {
             Some(Token::Let) => self.parse_let(),
             Some(Token::Print) => self.parse_print(),
             Some(Token::Identifier) => self.call_expr(),
+            Some(Token::StringLiteral) => {
+                let value = self.lexer.slice().to_string();
+                self.advance();
+                value.to_string();
+                Some(Expr::String(value))
+            }
             _ => self.expr(),
         }
     }
@@ -155,6 +167,11 @@ impl<'a> Parser<'a> {
                 let name = self.lexer.slice().to_string();
                 self.advance();
                 Some(Expr::Var(name))
+            }
+            Token::StringLiteral => {
+                let value = self.lexer.slice().trim_matches('"').to_string();
+                self.advance();
+                Some(Expr::String(value))
             }
             _ => None,
         }

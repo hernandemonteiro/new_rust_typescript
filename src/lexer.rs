@@ -30,7 +30,7 @@ pub enum Token {
     Semicolon,
 
     #[regex(r#""([^"\\]|\\.)*""#)]
-    String,
+    StringLiteral,
 
     #[regex(r"[0-9]+")]
     Number,
